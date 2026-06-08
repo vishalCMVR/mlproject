@@ -35,7 +35,7 @@ class ModelTrainer:
             models={
                 "Random Forest":RandomForestRegressor(),
                 "Decision Tree":DecisionTreeRegressor(),
-                "Linera Regression":LinearRegression(),
+                "Linear Regression":LinearRegression(),
                 "KNN":KNeighborsRegressor(),
                 "AdaBoost":AdaBoostRegressor(),
                 "GradientBoost":GradientBoostingRegressor(),
@@ -43,7 +43,61 @@ class ModelTrainer:
                 "CatBoost":CatBoostRegressor(verbose=False)
             }
 
-            model_report:dict=evaluate_model(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,models=models)
+            params = {
+
+                "Decision Tree": {
+                    'criterion': ['squared_error', 'friedman_mse'],
+                    'max_depth': [None, 5, 10, 20],
+                    'min_samples_split': [2, 5, 10],
+                    'min_samples_leaf': [1, 2, 4]
+                },
+
+                "Random Forest": {
+                    'n_estimators': [100, 200, 300],
+                    'max_depth': [None, 10, 20],
+                    'min_samples_split': [2, 5],
+                    'min_samples_leaf': [1, 2],
+                    'max_features': ['sqrt', 'log2']
+                },
+
+                "Linear Regression": {
+                    # No major hyperparameters to tune
+                },
+
+                "KNN": {
+                    'n_neighbors': [3, 5, 7, 9],
+                    'weights': ['uniform', 'distance'],
+                    'metric': ['euclidean', 'manhattan']
+                },
+
+                "AdaBoost": {
+                    'n_estimators': [50, 100, 200],
+                    'learning_rate': [0.01, 0.1, 1.0]
+                },
+
+                "GradientBoost": {
+                    'n_estimators': [100, 200],
+                    'learning_rate': [0.01, 0.1],
+                    'max_depth': [3, 5, 7],
+                    'subsample': [0.8, 1.0]
+                },
+
+                "XGBoost": {
+                    'n_estimators': [100, 200],
+                    'learning_rate': [0.01, 0.1],
+                    'max_depth': [3, 5, 7],
+                    'subsample': [0.8, 1.0],
+                    'colsample_bytree': [0.8, 1.0]
+                },
+
+                "CatBoost": {
+                    'iterations': [100, 200],
+                    'learning_rate': [0.01, 0.1],
+                    'depth': [4, 6, 8]
+                }
+            }
+
+            model_report:dict=evaluate_model(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,models=models,params=params)
 
             best_model_score=max(sorted(model_report.values()))
             best_model_name=list(model_report.keys())[list(model_report.values()).index(best_model_score)]
