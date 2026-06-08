@@ -104,6 +104,9 @@ class ModelTrainer:
 
             best_model=models[best_model_name]
 
+            print("Best Model:", best_model_name)
+            print("Best Score:", best_model_score)
+
             if best_model_score<0.6:
                 raise CustomException("No best model found")
             logging.info("Best found model on both training and test dataset")
